@@ -4,16 +4,22 @@ const FIREWORKS_API_KEY = "fw_3ZYJCLCzqcFn5pDKkMT84i7w";
 
 //tools
 
-function getWeatherDetails(city = " ") {
-  if (city.toLowerCase() === "sylhet") return "10°C";
-  if (city.toLowerCase() === "dhaka") return "20°C";
-  if (city.toLowerCase() === "rangpur") return "15°C";
-  if (city.toLowerCase() === "kustia") return "25°C";
-  if (city.toLowerCase() === "sirajganj") return "35°C";
+function getStudentDetails(name = " ") {
+  if (name === "sakib") {
+    return "Sakib is a student of CSE department. He is a good student. His CGPA is 3.8";
+  }
+
+  if (name === "salim") {
+    return "salim is a student of Account department. He is a good student. His CGPA is 3.5";
+  }
+
+  if (name === "rafi") {
+    return "Rafi is a student of Bangla  department. He is a average student. His CGPA is 2.8";
+  }
 }
 
 const tools = {
-  getWeatherDetails: getWeatherDetails,
+  getStudentDetails: getStudentDetails,
 };
 
 const SYSTEM_PROMPT = `You are an AI Assistant with START, PLAN, ACTION, Observation and output State.
@@ -22,18 +28,22 @@ Wait for the user prompt and first PLAN using available tools. After planning, T
 Strictly follow the JSON output format as in examples.
 
 Available tools:
-- function getWeatherDetails(city: string): string
-getWeatherDetails is a function that accepts city name as string and return the weather details. 
+- function getStudentDetails(name: string): string
+getStudentDetails is a function that accepts  student name as string and return their details. 
 
 Example:
-START {"type": "user", "user": "What is the sum of weather of sylhet and dhaka?"} "}
-{"type": "plan", "plan": "I will call getWeatherDetails for sylhet"}
-{"type": "action", "function": "getWeatherDetails", "input": "sylhet"}
-{"type": "observation", "observation": "10°C"}
-{"type": "plan", "plan": "I will call the getWeatherDetails tools for dhaka."}
-{"type": "action", "function": "getWeatherDetails", "input": "dhaka"}
-{"type": "observation", "observation": "20°C"}
-{"type": "output", "output": "The sum of weather of sylhet and dhaka is 30°C."}`;
+START {"type": "user", "user": "Who they are like sakib and salim  "} "}
+{"type": "plan", "plan": "I will call getStudentDetails for sakib"}
+{"type": "action", "function": "getStudentDetails", "input": "sakib"}
+{"type": "observation", "observation": "good student"}
+{"type": "plan", "plan": "I will call the getStudentDetails tools for salim."}
+{"type": "action", "function": "getStudentDetails", "input": "salim"}
+{"type": "observation", "observation": "good student"}
+{"type": "output", "output": "Their CGPA is 3.8 and 3.5."}
+{"type": "plan", "plan": "I will call the getStudentDetails function to retrieve students count."}
+{"type": "action", "function": "getStudentDetails", "input": "how many students"}
+{"type": "observation", "observation": "I will call the getStudentDetails function to count all student."}
+{"type": "output", "output": "there are 2 students."}`;
 
 const message = [{ role: "system", content: SYSTEM_PROMPT }];
 
