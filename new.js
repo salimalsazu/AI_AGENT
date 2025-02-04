@@ -11,13 +11,11 @@ function getWeatherDetails(city = "") {
 
 // Add a dummy getUserName function
 function getUserName() {
-  // For now, just return a placeholder name to avoid errors
   return "User";
 }
 
 const tools = {
   getWeatherDetails: getWeatherDetails,
-  // Register the getUserName function in the tools object
   getUserName: getUserName,
 };
 
@@ -58,9 +56,7 @@ function parseJSONStrings(str) {
   for (const match of matches) {
     try {
       results.push(JSON.parse(match));
-    } catch (err) {
-      // Ignore any malformed JSON
-    }
+    } catch (err) {}
   }
   return results;
 }
@@ -86,7 +82,6 @@ async function main() {
           stream: false,
         });
 
-        // console.log("Full Response:", response);
         const result = response?.message?.content.trim() || "";
 
         message.push({
@@ -104,7 +99,6 @@ async function main() {
             queryDone = true;
             break;
           } else if (call.type === "action") {
-            // Check if the tool (function) exists before calling
             const fn = tools[call.function];
             if (fn) {
               const observation = await fn(call.input);
@@ -122,5 +116,5 @@ async function main() {
     }
   }
 }
-
+/// Function to get the
 main();
