@@ -1,6 +1,7 @@
 {
   "name": "ai_agent",
   "version": "1.0.0",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node index.ts"
@@ -11,6 +12,10 @@
   "dependencies": {
     "axios": "^1.7.9",
     "express": "^4.21.2",
+    "ollama": "^0.5.12",
     "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0"
   }
 }

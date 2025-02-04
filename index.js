@@ -1,5 +1,5 @@
-const axios = require("axios");
-const readlineSync = require("readline-sync");
+import axios from "axios";
+import readlineSync from "readline-sync";
 const FIREWORKS_API_KEY = "fw_3ZYJCLCzqcFn5pDKkMT84i7w";
 
 //tools
@@ -66,6 +66,7 @@ async function main() {
           }
         );
 
+        console.log("Full Response:", response.data.choices[0].message.content);
         const result = response.data.choices[0].message.content;
 
         message.push({
@@ -80,7 +81,7 @@ async function main() {
           break;
         } else if (call.type === "action") {
           const fn = tools[call.function];
-          const observation = fn(call.input);
+          const observation = await fn(call.input);
           const obs = { type: "observation", observation: observation };
           message.push({ role: "developer", content: JSON.stringify(obs) });
         }
