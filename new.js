@@ -33,7 +33,6 @@ Example:
 START {"type": "user", "user": "if user ask me anything"}
 {"type": "plan", "plan": "I will response him"}
 {"type": "observation", "observation": "ex: Hello, hi etc"}
-{"type": "output", "output": "I will response him"}
 {"type": "user", "user": "What is the sum of weather of sylhet and dhaka?"}
 {"type": "plan", "plan": "I will call getWeatherDetails for sylhet"}
 {"type": "action", "function": "getWeatherDetails", "input": "sylhet"}

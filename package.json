@@ -10,8 +10,15 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@langchain/community": "^0.3.29",
+    "@langchain/core": "^0.3.39",
     "axios": "^1.7.9",
+    "chromadb": "^1.10.4",
+    "chromadb-default-embed": "^2.13.2",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "langchain": "^0.3.15",
+    "node-fetch": "^3.3.2",
     "ollama": "^0.5.12",
     "readline-sync": "^1.4.10"
   },

@@ -1,6 +1,5 @@
-const axios = require("axios");
-const readlineSync = require("readline-sync");
-const FIREWORKS_API_KEY = "fw_3ZYJCLCzqcFn5pDKkMT84i7w";
+import { Ollama } from "ollama";
+import readlineSync from "readline-sync";
 
 //tools
 
@@ -39,13 +38,28 @@ START {"type": "user", "user": "Who they are like sakib and salim  "} "}
 {"type": "plan", "plan": "I will call the getStudentDetails tools for salim."}
 {"type": "action", "function": "getStudentDetails", "input": "salim"}
 {"type": "observation", "observation": "good student"}
-{"type": "output", "output": "Their CGPA is 3.8 and 3.5."}
+{"type": "output", "output": "Their CGPA is a 3.5."}
 {"type": "plan", "plan": "I will call the getStudentDetails function to retrieve students count."}
 {"type": "action", "function": "getStudentDetails", "input": "how many students"}
 {"type": "observation", "observation": "I will call the getStudentDetails function to count all student."}
 {"type": "output", "output": "there are 2 students."}`;
 
 const message = [{ role: "system", content: SYSTEM_PROMPT }];
+const ollama = new Ollama({ host: "http://localhost:11434" });
+
+function parseJSONStrings(str) {
+  const regex = /({[^]*?})/g;
+  const matches = str.match(regex);
+  if (!matches) return [];
+
+  const results = [];
+  for (const match of matches) {
+    try {
+      results.push(JSON.parse(match));
+    } catch (err) {}
+  }
+  return results;
+}
 
 async function main() {
   while (true) {
@@ -59,45 +73,48 @@ async function main() {
       content: JSON.stringify(q),
     });
 
-    while (true) {
+    let queryDone = false;
+    while (!queryDone) {
       try {
-        const response = await axios.post(
-          "https://api.fireworks.ai/inference/v1/chat/completions",
-          {
-            messages: message,
-            model: "accounts/fireworks/models/llama-v3p1-8b-instruct",
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${FIREWORKS_API_KEY}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await ollama.chat({
+          model: "llama3.2:1b",
+          messages: message,
+          stream: false,
+        });
 
-        const result = response.data.choices[0].message.content;
+        const result = response?.message?.content.trim() || "";
 
         message.push({
           role: "assistant",
           content: result,
         });
 
-        const call = JSON.parse(result);
+        const jsonObjects = parseJSONStrings(result);
 
-        if (call.type === "output") {
-          console.log(call.output);
-          break;
-        } else if (call.type === "action") {
-          const fn = tools[call.function];
-          const observation = fn(call.input);
-          const obs = { type: "observation", observation: observation };
-          message.push({ role: "developer", content: JSON.stringify(obs) });
+        for (const call of jsonObjects) {
+          // console.log("Call:", call);
+
+          if (call.type === "output") {
+            console.log(call.output);
+            queryDone = true;
+            break;
+          } else if (call.type === "action") {
+            const fn = tools[call.function];
+            if (fn) {
+              const observation = await fn(call.input);
+              const obs = { type: "observation", observation: observation };
+              message.push({ role: "developer", content: JSON.stringify(obs) });
+            } else {
+              console.error(`Error: function "${call.function}" not found.`);
+            }
+          }
         }
       } catch (error) {
         console.error("Error:", error);
+        break;
       }
     }
   }
 }
-
+/// Function to get the
 main();
